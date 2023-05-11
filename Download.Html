@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script>
+        const Id = localStorage.getItem("ID");
+        const Level = localStorage.getItem("Level");
+        const Semester = localStorage.getItem("Semester");
+        const ResultTemp = localStorage.getItem("Results");
+        const Results = JSON.parse(ResultTemp)
+        let lvl, Sem, Name, Index;
+        switch (Level) {
+            case "1":
+                lvl = "First";
+                break;
+            case "2":
+                lvl = "Second";
+                break;
+            case "3":
+                lvl = "Third";
+                break;
+            case "4":
+                lvl = "Fourth";
+                break;
+            default:
+                break;
+        }
+        switch (Semester) {
+            case "1":
+                Sem = "First";
+                break;
+            case "2":
+                Sem = "Second";
+                break;
+            case "3":
+                Sem = "Third";
+                break;
+            case "4":
+                Sem = "Fourth";
+                break;
+            default:
+                break;
+        }
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("Id", Id);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch("PHP/GetDetails.php", requestOptions)
+            .then(response => response.json())
+            .then(result => handleData(result))
+            .catch(error => console.log('error', error));
+        function handleData(result) {
+            Name = result['Name'];
+            Index = result['Index'];
+            document.getElementById("Name").innerText = Name;
+            document.getElementById("Index").innerText = Index;
+            
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+
+           
+            document.getElementById("RegNo").innerText = Id;
+
+            document.getElementById("Exam").innerText = lvl + " Examination in Information Communication Technology";
+            document.getElementById("Semester").innerText = Sem + " Semester";
+
+            const table = document.getElementById("Result Division");
+            let i = 1;
+            for (const key in Results) {
+                const row = document.createElement("tr");
+                const Number = document.createElement("td");
+                const subCode = document.createElement("td");
+                const subName = document.createElement("td");
+                const Grade = document.createElement("td");
+                // const subCodeL = document.createElement("label");
+                // const subNameL = document.createElement("label");
+                // const GradeL = document.createElement("label");
+                Number.innerHTML = i;
+                subCode.innerHTML = Results[key][0];
+                // subCode.name = "sc" + i;
+                subName.innerHTML = Results[key][1];
+                // subName.name = "sn" + i;
+                Grade.innerHTML = Results[key][2];
+                // Grade.name = "gd" + i;
+                // subCode.appendChild(subCode);
+                // subName.appendChild(subName);
+                // Grade.appendChild(Grade);
+                row.appendChild(Number);
+                row.appendChild(subName);
+                row.appendChild(subCode);
+                row.appendChild(Grade);
+                Number.classList.add("border", "border-dark");
+                subCode.classList.add("border", "border-dark");
+                subName.classList.add("border", "border-dark");
+                Grade.classList.add("border", "border-dark");
+                row.classList.add("border", "border-dark");
+                table.appendChild(row);
+                i++;
+            }
+            const style = `
+                @page {
+                size: A4;
+                margin: 0;
+                }
+                html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 0;
+                }
+            `;
+            const head = document.head || document.getElementsByTagName('head')[0];
+            const styleElement = document.createElement('style');
+            styleElement.type = 'text/css';
+            styleElement.appendChild(document.createTextNode(style));
+            head.appendChild(styleElement);
+            setTimeout(()=>{window.print()},2000);
+            
+            head.removeChild(styleElement);
+
+        });
+
+        
+            
+
+
+
+
+
+    </script>
+</head>
+
+<body>
+
+    <div class="container" style="margin-right:50px;" id="myElementId">
+
+        <!--<div style="width:970px; height:1200px; padding:20px; text-align:center; border: 10px solid #787878">-->
+        <div style="width:700px; height:1030px; padding:10px; text-align:center; border: 5px solid #787878">
+            <img src="./logo.png" class="mx-auto d-block" alt=""
+                style="width:100px; height:100px; margin-bottom:10px; margin-top:10px;">
+            <span style="font-size:16px;">
+                <h3><u>UNIVERSITY OF VAVUNIYA SRI LANKA</u></h3>
+            </span>
+            <div>
+                <table style="margin-left:90px; text-align:justify;">
+                    <tr>
+                        <td>Name</td>
+                        <td>:-</td>
+                        <td id=Name>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Registration No</td>
+                        <td>:-</td>
+                        <td id="RegNo">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Index No</td>
+                        <td>:-</td>
+                        <td id="Index"></td>
+                    </tr>
+                </table>
+            </div><br>
+            <span style="font-size:18px"><b><u>Faculty of Technological Studies</u></b></span>
+            <br>
+            <span style="font-size:18px"><u id="Exam">First Examination in Information Communication
+                    Technology-2019</u></span>
+            <br />
+            <span style="font-size:18px"><u id="Semester">First Semester-January 2022</u></span> <br />
+            <p>The grades of marks obtained by you in each unit offered for this examination are given below.</p>
+
+            <div>
+                <table class="table table-bordered" style="width:600px;" id="Result Division">
+                    <tr>
+                        <th>No.</th>
+                        <th style="padding-right:auto">Subject</th>
+                        <th>Subject Code</th>
+                        <th>Grade</th>
+                    </tr>
+                </table>
+            </div>
+            
+            <!--<div class="square square-lg border border-dark" style="width:150px; height:30px;"><i>Semester GPA:</i></div>-->
+            <div class="container">
+                <div class="row">
+                    <div class="col" style="margin-top:30px; text-align:justify;">
+                        Prepared by:
+                        <br><br>
+                        Date: -
+                        <br><br><br>
+
+                        <table style="margin-top:10px; font-size:10px;">
+                            <u><font-size="10px">Key to the grading</u>
+                            <tr>
+                                <td>A+</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">85-100</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>C</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">50-54</td>
+                            </tr>
+
+                            <tr>
+                                <td>A</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">80-84</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>C-</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">45-49</td>
+                            </tr>
+
+                            <tr>
+                                <td>A-</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">75-79</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>D+</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">40-44</td>
+                            </tr>
+
+                            <tr>
+                                <td>B+</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">70-74</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>D</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">35-39</td>
+                            </tr>
+
+                            <tr>
+                                <td>B</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">65-69</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>E</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">00-34</td>
+                            </tr>
+
+                            <tr>
+                                <td>B-</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">60-64</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>Ab</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">Absent</td>
+                            </tr>
+
+                            <tr>
+                                <td>C+</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">55-59</td>
+                                <td style="padding-left:20px;"></td>
+                                <td>MC</td>
+                                <td style="padding-left:5px;">--</td>
+                                <td style="padding-left:5px;">Medical</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="col" style="margin-top:30px;">
+
+                        Checked by:<br><br>
+
+                        ................................ <br>
+                        (K.Gnanalasharan)<br>
+                        Deputy registrar,<br>
+                        Examination and Student Admission
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <p><b>NB:</b> Students are requested to preserve this statement carefully, as no duplicate will be issued
+                under any circumstance</p>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
